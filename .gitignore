@@ -1,2 +1,4 @@
 pythonmacros.egg-info
 *.pyc
+macro_lib
+.vscode

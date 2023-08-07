@@ -1,11 +1,14 @@
 from pynput import keyboard
 
+
 EDITOR = "editor"
 BUTTONS = "buttons"
 MACROS = "macros"
 KEYS = "keys"
 SCRIPT = "script"
 OPEN_CONFIG = "open_config"
+MACROS_PATH = "macros_path"
+EDIT_MODE_TOGGLE = "edit_mode_toggle"
 
 KEY_MAP = {
     "F1": keyboard.Key.f1,
@@ -19,9 +22,8 @@ KEY_MAP = {
     "F9": keyboard.Key.f9,
     "F10": keyboard.Key.f10,
     "F11": keyboard.Key.f11,
-    "F12": keyboard.Key.f12,    
+    "F12": keyboard.Key.f12,
     "ctrl": keyboard.Key.ctrl,
     "shift": keyboard.Key.shift,
-    "alt": keyboard.Key.alt
-    
+    "alt": keyboard.Key.alt,
 }
