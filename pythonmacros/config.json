@@ -1,0 +1,15 @@
+{
+    "editor":"C:\\Program Files\\Notepad++\\notepad++.exe",
+    "macros_path": "",
+    "buttons":{
+        "open_config": "F1"
+    },
+    "macros":[
+        {
+            "keys": ["ctrl", "1"],
+            "script": "print('yay')"
+        }
+    ]
+        
+    
+}
