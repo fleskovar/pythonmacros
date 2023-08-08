@@ -9,8 +9,28 @@ edit_mode = False
 
 def get_callbacks(config: Config):
     def check_combination(keys, edit_mode):
+        processed_keys = list()
+
+        for k in list(keys):
+            pk = k
+            if hasattr(k, "char"):
+                # This is a key or control command
+                if k.char is not None:
+                    code = ord(k.char)
+                    pk = k.char if code > 31 else chr(code + 64)
+                    pk = pk.lower()
+                else:
+                    pk = chr(k.vk).lower()
+            else:
+                if keyboard.Key.ctrl_l == k or keyboard.Key.ctrl_r == k:
+                    pk = keyboard.Key.ctrl
+
+            processed_keys.append(pk)
+
+        processed_keys = set(processed_keys)
+
         for trigger, script in config.trigger_data.items():
-            if set(trigger).issubset(keys):
+            if set(trigger).issubset(processed_keys):
                 if edit_mode is False:
                     # Execute
                     with open(script, "r") as f:

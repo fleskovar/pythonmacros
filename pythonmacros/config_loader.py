@@ -57,7 +57,7 @@ class Config:
         for trigger in self._config_dict[MACROS]:
             keys = trigger[KEYS]
             script = trigger[SCRIPT]
-            keys = tuple(KEY_MAP.get(k, k) for k in sorted(keys))
+            keys = tuple(KEY_MAP.get(k, k.lower()) for k in sorted(keys))
             trigger_data[keys] = self.macros_path / script
         self.trigger_data = trigger_data
 

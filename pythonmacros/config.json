@@ -7,7 +7,7 @@
     },
     "macros":[
         {
-            "keys": ["ctrl", "1"],
+            "keys": ["ctrl", "5"],
             "script": "macro_1.py"
         }
     ]
