@@ -3,14 +3,12 @@
     "macros_path": "C:\\local\\pythonmacros\\macro_lib",
     "buttons":{
         "open_config": ["F1"],
-        "edit_mode_toggle": ["ctrl", "\\"]
+        "edit_mode_toggle": ["F2"]
     },
     "macros":[
         {
-            "keys": ["ctrl", "5"],
-            "script": "macro_1.py"
+            "keys": ["ctrl", "2"],
+            "script": "macro_2.py"
         }
     ]
-        
-    
 }

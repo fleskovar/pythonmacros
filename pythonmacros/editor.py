@@ -1,5 +1,6 @@
 import subprocess
 import platform
+import os
 
 
 def open_default_config_editor(file_path):
