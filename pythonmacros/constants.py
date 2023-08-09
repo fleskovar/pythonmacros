@@ -9,6 +9,8 @@ SCRIPT = "script"
 OPEN_CONFIG = "open_config"
 MACROS_PATH = "macros_path"
 EDIT_MODE_TOGGLE = "edit_mode_toggle"
+LIB_PATH = "lib_path"
+MAP = "map"
 
 KEY_MAP = {
     "F1": keyboard.Key.f1,

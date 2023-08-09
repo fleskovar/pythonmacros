@@ -1,14 +1,20 @@
 {
     "editor":"C:\\Program Files\\Notepad++\\notepad++.exe",
-    "macros_path": "C:\\local\\pythonmacros\\macro_lib",
+    
     "buttons":{
         "open_config": ["F1"],
         "edit_mode_toggle": ["F2"]
     },
+    
     "macros":[
         {
-            "keys": ["ctrl", "2"],
-            "script": "macro_2.py"
+            "lib_path": null,
+            "map":[
+                {
+                    "keys": ["ctrl", "1"],
+                    "script": "sample_macro.py"
+                }
+            ]
         }
     ]
 }

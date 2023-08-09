@@ -11,8 +11,9 @@ from .constants import (
     BUTTONS,
     OPEN_CONFIG,
     EDITOR,
-    MACROS_PATH,
+    LIB_PATH,
     EDIT_MODE_TOGGLE,
+    MAP
 )
 
 
@@ -22,10 +23,11 @@ class Config:
         self.trigger_data = dict()
         self.editor_button = None
         self.editor_path = None
-        self.macros_path = None
         self._config_dict = dict()
 
         self.config_path = config_path
+        self._default_macro_path = config_path.parent / "default_macros"
+        
         self._parse_config()
 
     def _parse_config(self):
@@ -42,7 +44,6 @@ class Config:
         )
 
         self.editor_path = Path(self._config_dict[EDITOR])
-        self.macros_path = Path(self._config_dict[MACROS_PATH])
 
         self.parse_triggers()
 
@@ -53,13 +54,24 @@ class Config:
         return config_dict
 
     def parse_triggers(self):
-        trigger_data = dict()
-        for trigger in self._config_dict[MACROS]:
-            keys = trigger[KEYS]
-            script = trigger[SCRIPT]
-            keys = tuple(KEY_MAP.get(k, k.lower()) for k in sorted(keys))
-            trigger_data[keys] = self.macros_path / script
-        self.trigger_data = trigger_data
+        trigger_data = dict()        
+        for macros_config in self._config_dict[MACROS]:
+            
+            macros_path = macros_config.get(LIB_PATH, None)
+            
+            if macros_path is not None:
+                macros_path = Path(macros_config[LIB_PATH])
+            else:
+                macros_path = self._default_macro_path
+            
+            triggers = macros_config[MAP]
+            
+            for trigger in triggers:
+                keys = trigger[KEYS]
+                script = trigger[SCRIPT]
+                keys = tuple(KEY_MAP.get(k, k.lower()) for k in sorted(keys))
+                trigger_data[keys] = macros_path / script
+            self.trigger_data = trigger_data
 
     @staticmethod
     def load(current_path: Path):
