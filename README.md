@@ -16,6 +16,9 @@ pythonmacros
 
 Default config (can be edited in config.json):
 
+![image](https://github.com/fleskovar/pythonmacros/assets/6884660/27855adc-2e19-43f2-882b-688e622dc141)
+
+
 Esc: Terminate app.
 
 F1: Open config.json in text editor.
