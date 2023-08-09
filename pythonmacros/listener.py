@@ -8,7 +8,6 @@ edit_mode = False
 
 
 def get_callbacks(config: Config):
-    
     def check_combination(keys, edit_mode_flag):
         processed_keys = list()
 
@@ -53,11 +52,11 @@ def get_callbacks(config: Config):
         if key == keyboard.Key.esc:
             # Condition for exiting
             raise KeyboardInterrupt()
-        
+
         config.keep_alive()
 
         pressed_keys.add(key)
-        
+
         if config.editor_button.issubset(pressed_keys):
             # Open config file in editor
             open_config_editor(config.editor_path, config.config_path)
@@ -66,10 +65,10 @@ def get_callbacks(config: Config):
             edit_mode = not edit_mode
             for edit_key in config.edit_mode_button:
                 pressed_keys.remove(edit_key)
-        
+
         print(" " * 100, end="\r")
         print(f"Edit mode: {edit_mode} -    {key}", end="\r")
-        
+
         check_combination(pressed_keys, edit_mode)
 
     def on_release(key):

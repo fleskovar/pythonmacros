@@ -6,7 +6,7 @@ Desktop macro tools with python.
 
 To install:
 ```
-pip install https://github.com/fleskovar/pythonmacros
+pip install git+https://github.com/fleskovar/pythonmacros.git
 ```
 
 To run:
