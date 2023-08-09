@@ -1,1 +1,1 @@
-print("This is a sample macro")
+print("This is a sample macro 2")

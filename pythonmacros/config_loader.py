@@ -14,7 +14,7 @@ from .constants import (
     LIB_PATH,
     EDIT_MODE_TOGGLE,
     MAP,
-    RECORD_MODE
+    RECORD_MODE,
 )
 
 
@@ -31,11 +31,9 @@ class Config:
         self._default_macro_path = config_path.parent / "default_macros"
 
         self._parse_config()
-        
+
     def _buttons_to_set(self, buttons):
-        return set(
-            [KEY_MAP.get(c, c) for c in sorted(buttons)]
-        )
+        return set([KEY_MAP.get(c, c) for c in sorted(buttons)])
 
     def _parse_config(self):
         self._config_dict = self.get_config_dict(self.config_path)
@@ -43,17 +41,17 @@ class Config:
         self.editor_button = self._buttons_to_set(
             self._config_dict[BUTTONS][OPEN_CONFIG]
         )
-        
+
         self.recording_button = self._buttons_to_set(
             self._config_dict[BUTTONS][RECORD_MODE]
         )
-        
+
         self.edit_mode_button = self._buttons_to_set(
             self._config_dict[BUTTONS][EDIT_MODE_TOGGLE]
         )
 
         editor_path = self._config_dict.get(EDITOR, None)
-        
+
         self.editor_path = Path(editor_path) if editor_path is not None else None
 
         self.parse_triggers()

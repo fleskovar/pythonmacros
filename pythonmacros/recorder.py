@@ -4,13 +4,15 @@ import pickle
 
 # Initialize empty list to store recorded actions
 recorded_actions = []
-KEY_PRESS = 'keypress'
-KEY_RELEASE ='keyrelease'
-CLICK = 'click'
-DOUBLE_CLICK = 'double_click'
-RELEASE ='release'
-SCROLL = 'scroll'
-DRAG = 'drag'
+KEY_PRESS = "keypress"
+KEY_RELEASE = "keyrelease"
+CLICK = "click"
+DOUBLE_CLICK = "double_click"
+RELEASE = "release"
+SCROLL = "scroll"
+DRAG = "drag"
+CTRL_HOTKEY = "hotkey"
+
 
 # Function to replay recorded actions
 def actions_to_script(recorded_actions):
@@ -27,7 +29,7 @@ def actions_to_script(recorded_actions):
             script.append(f"pyautogui.keyUp('{action[1]}')\n")
         elif action[0] == CLICK:
             script.append(f"pyautogui.click({action[1]}, {action[2]})\n")
-        elif action[0] == 'double_click':
+        elif action[0] == "double_click":
             script.append(f"pyautogui.doubleClick({action[1]}, {action[2]})\n")
         elif action[0] == RELEASE:
             script.append(f"pyautogui.mouseUp({action[1]}, {action[2]})\n")
@@ -38,5 +40,8 @@ def actions_to_script(recorded_actions):
             script.append(f"pyautogui.mouseDown()\n")
             script.append(f"pyautogui.moveRel({action[3]}, {action[4]})\n")
             script.append(f"pyautogui.mouseUp()\n")
+        elif action[0] == CTRL_HOTKEY:
+            script.append(f"pyautogui.hotkey('ctrl', '{str(action[1]).lower()}')\n")
+
     script.append("\n")
     return script

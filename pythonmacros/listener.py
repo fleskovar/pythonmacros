@@ -1,5 +1,5 @@
 from pynput import keyboard, mouse
-import  threading
+import threading
 import tempfile
 import os
 from .editor import open_config_editor
@@ -12,7 +12,8 @@ from .recorder import (
     DOUBLE_CLICK,
     RELEASE,
     SCROLL,
-    DRAG
+    DRAG,
+    CTRL_HOTKEY,
 )
 import time
 
@@ -21,13 +22,14 @@ recorded_actions = list()
 edit_mode = False
 recording = False
 last_click_time = time.time()  # To track double clicks
+kill = False
 
-lock = threading.Lock() 
+lock = threading.Lock()
 
 
 def get_callbacks(config: Config):
-    
     def check_combination(keys, edit_mode_flag):
+        global pressed_keys
         processed_keys = list()
 
         for k in list(keys):
@@ -62,6 +64,8 @@ def get_callbacks(config: Config):
                     with open(script, "r") as f:
                         # Load script at execution time to make sure it is always updated
                         exec(f.read())
+                        pressed_keys = set()
+                        return
                 else:
                     # Edit script
                     open_config_editor(config.editor_path, script)
@@ -70,10 +74,12 @@ def get_callbacks(config: Config):
         global edit_mode
         global recording
         global recorded_actions
-        if recording is False:            
+        global kill
+        if recording is False:
             if key == keyboard.Key.esc:
                 # Condition for exiting
-                raise KeyboardInterrupt()
+                kill = True
+                return
             config.keep_alive()
             pressed_keys.add(key)
             if config.editor_button.issubset(pressed_keys):
@@ -100,14 +106,19 @@ def get_callbacks(config: Config):
                 script = actions_to_script(recorded_actions)
                 recorded_actions = list()
                 save_script(script, config.editor_path)
-            
+
             try:
-                key_str = key.char
+                code = ord(key.char)
+                key_str = key.char if code > 31 else chr(code + 64)
             except AttributeError:
+                code = 99
                 key_str = str(key)
-            
+
             with lock:
-                recorded_actions.append((KEY_PRESS, key_str))        
+                if code > 31:
+                    recorded_actions.append((KEY_PRESS, key_str))
+                else:
+                    recorded_actions.append((CTRL_HOTKEY, key_str))
 
     def on_release(key):
         global recorded_actions
@@ -115,7 +126,7 @@ def get_callbacks(config: Config):
             key_str = key.char
         except AttributeError:
             key_str = str(key)
-        
+
         try:
             pressed_keys.remove(key)
             with lock:
@@ -126,19 +137,20 @@ def get_callbacks(config: Config):
 
     return on_press, on_release
 
-def save_script(script_lines, editor_path):    
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as temp_file:
+
+def save_script(script_lines, editor_path):
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".py") as temp_file:
         for l in script_lines:
             temp_file.write(l)
     temp_file_path = temp_file.name
     open_config_editor(editor_path, temp_file_path)
-        
+
 
 def on_click(x, y, button, pressed):
     global recording
     global last_click_time
     global recorded_actions
-    
+
     if pressed and recording:
         with lock:
             click_time = time.time()
@@ -151,13 +163,15 @@ def on_click(x, y, button, pressed):
         with lock:
             recorded_actions.append((RELEASE, x, y))
 
+
 def on_scroll(x, y, dx, dy):
     global recording
     global recorded_actions
     if recording:
         with lock:
-            recorded_actions.append((SCROLL, dx, dy))    
-        
+            recorded_actions.append((SCROLL, dx, dy))
+
+
 def on_drag(x, y, dx, dy):
     global recording
     global recorded_actions
@@ -168,13 +182,24 @@ def on_drag(x, y, dx, dy):
 
 def start_listener(config: Config):
     press_callback, release_callback = get_callbacks(config)
-    
-    keyboard_listener = keyboard.Listener(on_press=press_callback, on_release=release_callback)
+    keyboard_listener = keyboard.Listener(
+        on_press=press_callback, on_release=release_callback
+    )
+    mouse_listener = mouse.Listener(
+        on_click=on_click, on_scroll=on_scroll, on_drag=on_drag
+    )
+
+    def stop():
+        global kill
+        while True:
+            if kill:
+                keyboard_listener.stop()
+                mouse_listener.stop()
+                exit()
+
     keyboard_listener.start()
-    
-    mouse_listener = mouse.Listener(on_click=on_click, on_scroll=on_scroll, on_drag=on_drag)
     mouse_listener.start()
-    
-    keyboard_listener.join()
-    mouse_listener.join()
-    
+
+    stop_thread = threading.Thread(target=stop)
+    stop_thread.start()
+    stop_thread.join()
