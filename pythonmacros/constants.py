@@ -11,6 +11,7 @@ MACROS_PATH = "macros_path"
 EDIT_MODE_TOGGLE = "edit_mode_toggle"
 LIB_PATH = "lib_path"
 MAP = "map"
+RECORD_MODE = "record_mode"
 
 KEY_MAP = {
     "F1": keyboard.Key.f1,

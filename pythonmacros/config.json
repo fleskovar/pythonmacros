@@ -3,7 +3,8 @@
     
     "buttons":{
         "open_config": ["F1"],
-        "edit_mode_toggle": ["F2"]
+        "edit_mode_toggle": ["F2"],
+        "record_mode": ["F3"]
     },
     
     "macros":[
@@ -18,3 +19,4 @@
         }
     ]
 }
+

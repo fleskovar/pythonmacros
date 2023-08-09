@@ -14,6 +14,7 @@ setup(
     },
     package_data = {'pythonmacros' : files },
     install_requires=[
-        'pynput',
+        "pynput",
+        "pyautogui"
       ],
 )
