@@ -9,4 +9,7 @@ setup(
             "pythonmacros = pythonmacros.__main__:main"
         ]
     },
+    install_requires=[
+        'pynput',
+      ],
 )
