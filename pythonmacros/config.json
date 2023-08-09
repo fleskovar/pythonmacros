@@ -1,5 +1,5 @@
 {
-    "editor":"C:\\Program Files\\Notepad++\\notepad++.exe",
+    "editor":null,
     
     "buttons":{
         "open_config": ["F1"],

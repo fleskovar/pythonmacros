@@ -43,7 +43,9 @@ class Config:
             ]
         )
 
-        self.editor_path = Path(self._config_dict[EDITOR])
+        editor_path = self._config_dict.get(EDITOR, None)
+        
+        self.editor_path = Path(editor_path) if editor_path is not None else None
 
         self.parse_triggers()
 
