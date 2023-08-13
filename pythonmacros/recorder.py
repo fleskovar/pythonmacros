@@ -21,10 +21,12 @@ def actions_to_script(recorded_actions):
     script.append("import pyautogui\n")
     script.append("import time\n")
     script.append("\n")
+    script.append("pyautogui.PAUSE = 2.5\n")
     script.append("time.sleep(2)\n")  # Delay before replay starts, adjust as needed
     for action in recorded_actions:
         if action[0] == KEY_PRESS:
-            script.append(f"pyautogui.press('{action[1]}', presses=1, interval=0.0)\n")
+            # script.append(f"pyautogui.press('{action[1]}', presses=1, interval=0.0)\n")
+            script.append(f"pyautogui.keyDown('{action[1]}')\n")
         elif action[0] == KEY_RELEASE:
             script.append(f"pyautogui.keyUp('{action[1]}')\n")
         elif action[0] == CLICK:

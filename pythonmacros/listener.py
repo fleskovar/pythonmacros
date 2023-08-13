@@ -1,4 +1,5 @@
 from pynput import keyboard, mouse
+import pyautogui
 import threading
 import tempfile
 import os
@@ -22,12 +23,10 @@ recorded_actions = list()
 edit_mode = False
 recording = False
 last_click_time = time.time()  # To track double clicks
-kill = False
-
 lock = threading.Lock()
 
 
-def get_callbacks(config: Config):
+def get_callbacks(config: Config, mouse_thread):
     def check_combination(keys, edit_mode_flag):
         global pressed_keys
         processed_keys = list()
@@ -74,11 +73,11 @@ def get_callbacks(config: Config):
         global edit_mode
         global recording
         global recorded_actions
-        global kill
         if recording is False:
             if key == keyboard.Key.esc:
                 # Condition for exiting
-                kill = True
+                mouse_thread.stop()
+                exit()
                 return
             config.keep_alive()
             pressed_keys.add(key)
@@ -88,6 +87,7 @@ def get_callbacks(config: Config):
             elif config.recording_button.issubset(pressed_keys):
                 # Open config file in editor
                 recording = True
+                pyautogui.PAUSE = 0.0
                 return
             elif config.edit_mode_button.issubset(pressed_keys):
                 # Toggle edit mode on/off
@@ -181,25 +181,15 @@ def on_drag(x, y, dx, dy):
 
 
 def start_listener(config: Config):
-    press_callback, release_callback = get_callbacks(config)
-    keyboard_listener = keyboard.Listener(
-        on_press=press_callback, on_release=release_callback
-    )
     mouse_listener = mouse.Listener(
         on_click=on_click, on_scroll=on_scroll, on_drag=on_drag
     )
-
-    def stop():
-        global kill
-        while True:
-            if kill:
-                keyboard_listener.stop()
-                mouse_listener.stop()
-                exit()
-
-    keyboard_listener.start()
     mouse_listener.start()
-
-    stop_thread = threading.Thread(target=stop)
-    stop_thread.start()
-    stop_thread.join()
+        
+    
+    press_callback, release_callback = get_callbacks(config, mouse_listener)
+    keyboard_listener = keyboard.Listener(
+        on_press=press_callback, on_release=release_callback
+    )
+    keyboard_listener.start()
+    keyboard_listener.join()
