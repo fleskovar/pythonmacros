@@ -15,6 +15,8 @@ RECORD_MODE = "record_mode"
 ACTIONS = "actions"
 CLI = "cli"
 ARGS = "args"
+FILE = "file"
+PATTERN = "pattern"
 
 KEY_MAP = {
     "F1": keyboard.Key.f1,

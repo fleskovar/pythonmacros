@@ -18,6 +18,8 @@ from .constants import (
     ACTIONS,
     CLI,
     ARGS,
+    FILE,
+    PATTERN,
 )
 
 
@@ -30,6 +32,7 @@ class Config:
         self.recording_button = None
         self.editor_path = None
         self._config_dict = dict()
+        self.file_monitor = list()
 
         self.config_path = config_path
         self._default_macro_path = config_path.parent / "default_macros"
@@ -95,6 +98,17 @@ class Config:
                     keys = tuple(args)
                     cli_data[keys] = macros_path / script
                 self.cli_data = cli_data
+
+            if FILE in actions:
+                file_monitor = list()
+                for monitor in actions[FILE]:
+                    file_monitor.append(
+                        {
+                            PATTERN: monitor[PATTERN],
+                            SCRIPT: macros_path / monitor[SCRIPT],
+                        }
+                    )
+                self.file_monitor = file_monitor
 
     @staticmethod
     def load(current_path: Path):

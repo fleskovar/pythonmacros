@@ -25,6 +25,12 @@
                     "args": ["test"],
                     "script": "sample_macro.py"
                 }
+            ],
+            "file":[
+                {
+                    "pattern": ["test_trigger.txt"],
+                    "script": "sample_macro.py"
+                }
             ]
         }
     ]

@@ -29,4 +29,10 @@ F3: recording mode - records keyboard and mouse. Upon pressing Esc, a python scr
 
 Editor: define which editor to use to edit scripts and files.
 
-Macros: no elements can be added to the list, specifying a specific folder containing the macro scripts. If "lib_path" is not specified or set to null, default macro folder will be used.
+## Configuring ´actions´
+
+´macros´: no elements can be added to the list, specifying a specific folder containing the macro scripts. If "lib_path" is not specified or set to null, default macro folder will be used.
+
+´cli´: Specify cli commands to be run (e.g., pythonmacros test).
+
+´file´: Specify files to monitor for changes. If file or files matching one of the specified patterns change, a macro is executed.

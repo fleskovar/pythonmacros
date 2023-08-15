@@ -5,6 +5,7 @@ import tempfile
 import os
 from .editor import open_config_editor
 from .config_loader import Config
+from .file_monitor import FileMonitorThread
 from .recorder import (
     actions_to_script,
     KEY_PRESS,
@@ -27,7 +28,7 @@ last_click_time = time.time()  # To track double clicks
 lock = threading.Lock()
 
 
-def get_callbacks(config: Config, mouse_thread):
+def get_callbacks(config: Config, mouse_thread, file_monitor_thread):
     def check_combination(keys, edit_mode_flag):
         global pressed_keys
         processed_keys = list()
@@ -74,10 +75,12 @@ def get_callbacks(config: Config, mouse_thread):
         global edit_mode
         global recording
         global recorded_actions
+
         if recording is False:
             if key == keyboard.Key.esc:
                 # Condition for exiting
                 mouse_thread.stop()
+                file_monitor_thread.stop()
                 exit()
                 return
             config.keep_alive()
@@ -183,17 +186,23 @@ def on_drag(x, y, dx, dy):
 
 def start_listener(config: Config, args: List[str]):
     if "macros" in args:
+        file_monitor_thread = FileMonitorThread(config)
+        file_monitor_thread.start()
+
         mouse_listener = mouse.Listener(
             on_click=on_click, on_scroll=on_scroll, on_drag=on_drag
         )
         mouse_listener.start()
 
-        press_callback, release_callback = get_callbacks(config, mouse_listener)
+        press_callback, release_callback = get_callbacks(
+            config, mouse_listener, file_monitor_thread
+        )
         keyboard_listener = keyboard.Listener(
             on_press=press_callback, on_release=release_callback
         )
         keyboard_listener.start()
         keyboard_listener.join()
+
     elif len(args) > 0:
         script = config.check_cli(args)
         if script is not None:
