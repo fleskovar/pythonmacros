@@ -17,6 +17,7 @@ from .recorder import (
     CTRL_HOTKEY,
 )
 import time
+from typing import List
 
 pressed_keys = set()
 recorded_actions = list()
@@ -180,16 +181,21 @@ def on_drag(x, y, dx, dy):
             recorded_actions.append((DRAG, x, y, dx, dy))
 
 
-def start_listener(config: Config):
-    mouse_listener = mouse.Listener(
-        on_click=on_click, on_scroll=on_scroll, on_drag=on_drag
-    )
-    mouse_listener.start()
-        
-    
-    press_callback, release_callback = get_callbacks(config, mouse_listener)
-    keyboard_listener = keyboard.Listener(
-        on_press=press_callback, on_release=release_callback
-    )
-    keyboard_listener.start()
-    keyboard_listener.join()
+def start_listener(config: Config, args: List[str]):
+    if "macros" in args:
+        mouse_listener = mouse.Listener(
+            on_click=on_click, on_scroll=on_scroll, on_drag=on_drag
+        )
+        mouse_listener.start()
+
+        press_callback, release_callback = get_callbacks(config, mouse_listener)
+        keyboard_listener = keyboard.Listener(
+            on_press=press_callback, on_release=release_callback
+        )
+        keyboard_listener.start()
+        keyboard_listener.join()
+    elif len(args) > 0:
+        script = config.check_cli(args)
+        if script is not None:
+            with open(script, "r") as f:
+                exec(f.read())

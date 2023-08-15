@@ -12,6 +12,9 @@ EDIT_MODE_TOGGLE = "edit_mode_toggle"
 LIB_PATH = "lib_path"
 MAP = "map"
 RECORD_MODE = "record_mode"
+ACTIONS = "actions"
+CLI = "cli"
+ARGS = "args"
 
 KEY_MAP = {
     "F1": keyboard.Key.f1,

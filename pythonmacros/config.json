@@ -6,16 +6,27 @@
         "edit_mode_toggle": ["F2"],
         "record_mode": ["F3"]
     },
-    
-    "macros":[
+    "actions":[
         {
             "lib_path": null,
-            "map":[
+            "macros":[
                 {
-                    "keys": ["ctrl", "1"],
+                    
+                    "map":[
+                        {
+                            "keys": ["ctrl", "1"],
+                            "script": "sample_macro.py"
+                        }
+                    ]
+                }
+            ],
+            "cli":[
+                {
+                    "args": ["test"],
                     "script": "sample_macro.py"
                 }
             ]
         }
     ]
+    
 }

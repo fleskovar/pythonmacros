@@ -15,6 +15,9 @@ from .constants import (
     EDIT_MODE_TOGGLE,
     MAP,
     RECORD_MODE,
+    ACTIONS,
+    CLI,
+    ARGS,
 )
 
 
@@ -22,6 +25,7 @@ class Config:
     def __init__(self, config_path: Path) -> None:
         self._creation_time = None
         self.trigger_data = dict()
+        self.cli_data = dict()
         self.editor_button = None
         self.recording_button = None
         self.editor_path = None
@@ -53,7 +57,6 @@ class Config:
         editor_path = self._config_dict.get(EDITOR, None)
 
         self.editor_path = Path(editor_path) if editor_path is not None else None
-
         self.parse_triggers()
 
     def get_config_dict(self, config_path: Path) -> Dict:
@@ -63,23 +66,35 @@ class Config:
         return config_dict
 
     def parse_triggers(self):
-        trigger_data = dict()
-        for macros_config in self._config_dict[MACROS]:
-            macros_path = macros_config.get(LIB_PATH, None)
+        for actions in self._config_dict[ACTIONS]:
+            macros_path = actions.get(LIB_PATH, None)
 
-            if macros_path is not None:
-                macros_path = Path(macros_config[LIB_PATH])
-            else:
-                macros_path = self._default_macro_path
+            if MACROS in actions:
+                trigger_data = dict()
+                for macros_config in actions[MACROS]:
+                    macros_path = macros_config.get(LIB_PATH, None)
+                    if macros_path is not None:
+                        macros_path = Path(macros_config[LIB_PATH])
+                    else:
+                        macros_path = self._default_macro_path
 
-            triggers = macros_config[MAP]
+                    triggers = macros_config[MAP]
 
-            for trigger in triggers:
-                keys = trigger[KEYS]
-                script = trigger[SCRIPT]
-                keys = tuple(KEY_MAP.get(k, k.lower()) for k in sorted(keys))
-                trigger_data[keys] = macros_path / script
-            self.trigger_data = trigger_data
+                    for trigger in triggers:
+                        keys = trigger[KEYS]
+                        script = trigger[SCRIPT]
+                        keys = tuple(KEY_MAP.get(k, k.lower()) for k in sorted(keys))
+                        trigger_data[keys] = macros_path / script
+                    self.trigger_data = trigger_data
+
+            if CLI in actions:
+                cli_data = dict()
+                for cli_command in actions[CLI]:
+                    args = cli_command[ARGS]
+                    script = trigger[SCRIPT]
+                    keys = tuple(args)
+                    cli_data[keys] = macros_path / script
+                self.cli_data = cli_data
 
     @staticmethod
     def load(current_path: Path):
@@ -94,3 +109,6 @@ class Config:
 
         if self._creation_time < updated_modified_time:
             self._parse_config()
+
+    def check_cli(self, args):
+        return self.cli_data[tuple(args)]
